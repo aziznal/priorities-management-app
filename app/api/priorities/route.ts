@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Priority } from "@/lib/common/types/priority";
-import { parseWithSchema } from "@/lib/server/helpers/parsing";
+import { Priority } from "@/lib/common/types";
+import { parseWithSchema } from "@/lib/server/helpers";
 import {
   createPriorityRequestSchema,
   deleteManyPrioritiesRequestSchema,
@@ -12,10 +12,10 @@ import {
   buildOkResponse,
   buildOkResponseWithData,
   buildServerErrorResponse,
-} from "@/lib/server/helpers/responses";
-import { readDb, writeDb } from "@/lib/server/data/driver";
-import { getLastOrder } from "@/lib/common/core";
-import { createUuid } from "@/lib/common/helpers/create-uuid";
+} from "@/lib/server/helpers";
+import { readDb, writeDb } from "@/lib/server/data";
+import { getLastOrder, removeOrderGaps } from "@/lib/common/core";
+import { createUuid } from "@/lib/common/helpers";
 
 export type GetPrioritiesResponse = {
   data: Priority[];
@@ -53,7 +53,7 @@ export async function POST(req: Request) {
 
   const newPriority: Priority = {
     id: createUuid(),
-    body: reqBody.body ?? "Untittied",
+    body: reqBody.body,
     order: lastOrder + 1,
   };
 
@@ -87,14 +87,9 @@ export async function DELETE(req: NextRequest) {
 
   if (!existingData) return buildNotFoundResponse();
 
-  const updatedPriorities = existingData.priorities
-    .filter((p) => !reqBody.priorityIds.includes(p.id))
-    // filling in potential gaps between orders
-    .toSorted((a, b) => a.order - b.order)
-    .map((p, i) => ({
-      ...p,
-      order: i,
-    }));
+  const updatedPriorities = removeOrderGaps(
+    existingData.priorities.filter((p) => !reqBody.priorityIds.includes(p.id)),
+  );
 
   await writeDb({ priorities: updatedPriorities });
 

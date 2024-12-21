@@ -1,14 +1,15 @@
-import { priorityIdSchema } from "@/lib/common/schemas/priority";
-import { readDb, writeDb } from "@/lib/server/data/driver";
-import { parseWithSchema } from "@/lib/server/helpers/parsing";
+import { priorityIdSchema } from "@/lib/common/schemas";
+import { readDb, writeDb } from "@/lib/server/data";
+import { parseWithSchema } from "@/lib/server/helpers";
 import {
   buildBadRequestResponse,
   buildNotFoundResponse,
   buildOkResponse,
   buildServerErrorResponse,
-} from "@/lib/server/helpers/responses";
+} from "@/lib/server/helpers";
 import { z } from "zod";
 import { updatePriorityRequestSchema } from "../schema";
+import { removeOrderGaps } from "@/lib/common/core";
 
 const paramsSchema = z.object({
   id: priorityIdSchema,
@@ -74,8 +75,8 @@ export async function DELETE(_req: Request, ctx: Props) {
 
   if (!existingPriority) return buildNotFoundResponse();
 
-  const updatedPriorities = existingData.priorities.filter(
-    (p) => p.id !== params.id,
+  const updatedPriorities = removeOrderGaps(
+    existingData.priorities.filter((p) => p.id !== params.id),
   );
 
   await writeDb({ priorities: updatedPriorities });

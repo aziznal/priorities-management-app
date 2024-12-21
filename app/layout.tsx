@@ -4,8 +4,8 @@ import "./globals.css";
 import { Providers } from "@/lib/client/providers";
 
 const jetBrainsMono = JetBrains_Mono({
-  variable: "--font-geist-sans",
   subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800"],
 });
 
 export const metadata: Metadata = {
@@ -22,7 +22,7 @@ export default function RootLayout({
     <Providers>
       <html lang="en">
         <body
-          className={`${jetBrainsMono.variable} font-mono antialiased min-h-screen flex flex-col bg-indigo-500`}
+          className={`${jetBrainsMono.className} antialiased min-h-screen flex flex-col bg-violet-500`}
         >
           {children}
         </body>

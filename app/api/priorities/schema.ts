@@ -2,15 +2,15 @@ import {
   priorityBodySchema,
   priorityIdSchema,
   prioritySchema,
-} from "@/lib/common/schemas/priority";
+} from "@/lib/common/schemas";
 import { z } from "zod";
 
 export const createPriorityRequestSchema = z.object({
-  body: priorityBodySchema.optional(),
+  body: priorityBodySchema,
 });
 
 export const updatePriorityRequestSchema = z.object({
-  body: priorityBodySchema.optional(),
+  body: priorityBodySchema,
 });
 
 export const updateManyPrioritiesRequestSchema = z.object({

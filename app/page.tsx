@@ -1,48 +1,81 @@
 "use client";
 
-import { useGetPrioritiesQuery } from "@/lib/client/data/priorities/queries";
-import { cn } from "@/lib/client/utils";
-import { LucideGripVertical } from "lucide-react";
-import { PropsWithChildren } from "react";
+import {
+  EmptyText,
+  PriorityCard,
+  TopPriorityCard,
+} from "@/lib/client/components";
+import { Button } from "@/lib/client/components";
+import {
+  useCreatePriorityMutation,
+  useDeletePriorityByIdMutation,
+  useGetPrioritiesQuery,
+} from "@/lib/client/data/priorities";
+import { Priority } from "@/lib/common/types";
+import { useMemo } from "react";
 
 export default function Home() {
   const prioritiesQuery = useGetPrioritiesQuery();
 
-  const topPriority = prioritiesQuery.data?.find((p) => p.order === 1);
+  const createPriorityMutation = useCreatePriorityMutation();
+  const deletePriorityByIdMutation = useDeletePriorityByIdMutation();
+
+  const topPriority = useMemo(() => {
+    if (!prioritiesQuery.isSuccess) return undefined;
+
+    return prioritiesQuery.data.find((p) => p.order === 1);
+  }, [prioritiesQuery.data, prioritiesQuery.isSuccess]);
+
+  const otherPriorities: Priority[] = useMemo(() => {
+    if (!prioritiesQuery.isSuccess) return [];
+
+    return prioritiesQuery.data.slice(1);
+  }, [prioritiesQuery.data, prioritiesQuery.isSuccess]);
 
   return (
-    <main className="flex flex-col items-center mt-12">
-      <h1 className="text-2xl font-bold mb-8">Prioritize yo shit</h1>
+    <main className="container mt-6 flex flex-col">
+      <h1 className="mb-8 text-balance text-center text-3xl font-black">
+        LIFE PRIORITIES MANAGEMENT
+      </h1>
 
-      <section className="flex flex-col lg:flex-row gap-8 mb-24">
-        <TopPriorityCard className="border-2 bg-lime-400">
-          <h1 className="text-xl font-bold">{topPriority?.body}</h1>
-        </TopPriorityCard>
+      <section className="mb-8">
+        <h2 className="mb-4 text-xl font-semibold">Top Priority</h2>
+
+        {topPriority && (
+          <TopPriorityCard className="border-2 bg-lime-400">
+            <h1 className="text-xl font-bold">{topPriority.body}</h1>
+          </TopPriorityCard>
+        )}
+
+        {!topPriority && <EmptyText>No top priority has been set</EmptyText>}
       </section>
 
-      <section className="">
-        <h2 className="text-2xl font-bold">Others</h2>
+      <section>
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-xl font-semibold">Others</h2>
+
+          <Button
+            onClick={() => createPriorityMutation.mutate({ body: "Untittied" })}
+          >
+            New
+          </Button>
+        </div>
+
+        <div className="flex flex-col gap-4 overflow-y-auto pb-4">
+          {otherPriorities.map((p) => (
+            <PriorityCard
+              key={p.id}
+              onDeleteClicked={() => deletePriorityByIdMutation.mutate(p.id)}
+            >
+              {p.body}
+            </PriorityCard>
+          ))}
+
+          {otherPriorities.length === 0 && (
+            <EmptyText>No other priorities</EmptyText>
+          )}
+        </div>
       </section>
     </main>
   );
 }
-
-const TopPriorityCard: React.FC<
-  {
-    className?: string;
-  } & PropsWithChildren
-> = ({ className, children }) => {
-  return (
-    <div
-      className={cn(
-        "p-4 border lg:order-none shadow-[4px_4px] rounded-xl bg-zinc-100 h-fit w-[300px] hover:border-2 cursor-grab select-none",
-        className,
-      )}
-    >
-      <div className="flex gap-2 items-center">
-        <LucideGripVertical />
-        {children}
-      </div>
-    </div>
-  );
-};

@@ -1,13 +1,16 @@
 import { type ZodSchema } from "zod";
 
-export function parseWithSchema<TSchema>({
-  data,
-  schema,
-}: {
+type Params<TSchema> = {
   data: unknown;
   schema: ZodSchema<TSchema>;
-}) {
-  const { data: parsedData, error, success } = schema.safeParse(data);
+};
+
+export function parseWithSchema<TSchema>(params: Params<TSchema>) {
+  const {
+    data: parsedData,
+    error,
+    success,
+  } = params.schema.safeParse(params.data);
 
   if (success) return parsedData;
 

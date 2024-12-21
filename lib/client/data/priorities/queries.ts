@@ -1,15 +1,13 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { sendGetPrioritiesRequest } from "./api/get";
-import { sendCreateNewPriorityRequest } from "./api/create";
-import { queryClient } from "../../query-client";
+import { queryClient } from "@/lib/client/query-client";
 import {
+  sendGetPrioritiesRequest,
   sendUpdateManyPrioritiesRequest,
   sendUpdatePriorityByIdRequest,
-} from "./api/update";
-import {
   sendDeleteManyPrioritiesRequest,
   sendDeletePriorityByIdRequest,
-} from "./api/delete";
+  sendCreateNewPriorityRequest,
+} from ".";
 
 export const priorityQueryKeyFactory = {
   all: "priorities",
