@@ -10,11 +10,11 @@ export const TopPriorityCard: React.FC<
   return (
     <div
       className={cn(
-        "p-4 border lg:order-none shadow-[4px_4px] rounded-xl bg-zinc-100 h-fit w-[300px] hover:border-2 cursor-grab select-none",
+        "h-fit w-[300px] cursor-grab select-none rounded-xl border-2 bg-amber-500 p-4 shadow-[4px_4px] hover:border-2 lg:order-none",
         className,
       )}
     >
-      <div className="flex gap-2 items-center">
+      <div className="flex items-center gap-2">
         <LucideGripVertical />
         {children}
       </div>

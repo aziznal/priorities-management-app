@@ -2,6 +2,7 @@
 
 import {
   EmptyText,
+  Input,
   PriorityCard,
   TopPriorityCard,
 } from "@/lib/client/components";
@@ -42,7 +43,7 @@ export default function Home() {
         <h2 className="mb-4 text-xl font-semibold">Top Priority</h2>
 
         {topPriority && (
-          <TopPriorityCard className="border-2 bg-lime-400">
+          <TopPriorityCard>
             <h1 className="text-xl font-bold">{topPriority.body}</h1>
           </TopPriorityCard>
         )}
@@ -51,20 +52,27 @@ export default function Home() {
       </section>
 
       <section>
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-xl font-semibold">Others</h2>
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <h2 className="text-xl font-semibold">Others</h2>
 
-          <Button
-            onClick={() => createPriorityMutation.mutate({ body: "Untittied" })}
-          >
-            New
-          </Button>
+            <Button
+              onClick={() =>
+                createPriorityMutation.mutate({ body: "Untittied" })
+              }
+            >
+              New +
+            </Button>
+          </div>
+
+          <Input className="max-w-[300px]" />
         </div>
 
-        <div className="flex flex-col gap-4 overflow-y-auto pb-4">
+        <div className="flex flex-wrap gap-4 overflow-y-auto pb-4 pr-1">
           {otherPriorities.map((p) => (
             <PriorityCard
               key={p.id}
+              className="min-w-[350px]"
               onDeleteClicked={() => deletePriorityByIdMutation.mutate(p.id)}
             >
               {p.body}

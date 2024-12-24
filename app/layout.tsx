@@ -22,7 +22,7 @@ export default function RootLayout({
     <Providers>
       <html lang="en">
         <body
-          className={`${jetBrainsMono.className} antialiased min-h-screen flex flex-col bg-violet-500`}
+          className={`${jetBrainsMono.className} flex min-h-screen flex-col bg-amber-100 antialiased`}
         >
           {children}
         </body>
