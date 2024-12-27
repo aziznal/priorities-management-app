@@ -13,6 +13,7 @@ import {
   useGetPrioritiesQuery,
 } from "@/lib/client/data/priorities";
 import { Priority } from "@/lib/common/types";
+import { LucideSearch } from "lucide-react";
 import { useMemo } from "react";
 
 export default function Home() {
@@ -65,7 +66,9 @@ export default function Home() {
             </Button>
           </div>
 
-          <Input className="max-w-[300px]" />
+          <div className="flex flex-col gap-4">
+            <Input className="max-w-[300px]" prefixElement={<LucideSearch />} />
+          </div>
         </div>
 
         <div className="flex flex-wrap gap-4 overflow-y-auto pb-4 pr-1">
