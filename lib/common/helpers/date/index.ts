@@ -1,4 +1,4 @@
-export function formatDate(date: string) {
+export function getElapsedTime(date: string) {
   const formatter = new Intl.RelativeTimeFormat("en", { style: "narrow" });
 
   const now = new Date().valueOf();
@@ -15,7 +15,7 @@ export function formatDate(date: string) {
   }
 
   if (timeDiffInHours !== 0) {
-    return formatter.format(timeDiffInDays, "hours");
+    return formatter.format(timeDiffInHours, "hours");
   }
 
   return formatter.format(timeDiffInMinutes, "minutes");

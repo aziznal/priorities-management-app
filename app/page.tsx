@@ -12,9 +12,10 @@ import {
   useDeletePriorityByIdMutation,
   useGetPrioritiesQuery,
 } from "@/lib/client/data/priorities";
+import { useFuzzyFilterPriorities } from "@/lib/client/hooks";
 import { Priority } from "@/lib/common/types";
-import { LucideSearch } from "lucide-react";
-import { useMemo } from "react";
+import { LucideSearch, LucideX } from "lucide-react";
+import { useMemo, useState } from "react";
 
 export default function Home() {
   const prioritiesQuery = useGetPrioritiesQuery();
@@ -24,15 +25,22 @@ export default function Home() {
 
   const topPriority = useMemo(() => {
     if (!prioritiesQuery.isSuccess) return undefined;
-
     return prioritiesQuery.data.find((p) => p.order === 1);
   }, [prioritiesQuery.data, prioritiesQuery.isSuccess]);
 
-  const otherPriorities: Priority[] = useMemo(() => {
+  const unfilteredPriorities: Priority[] = useMemo(() => {
     if (!prioritiesQuery.isSuccess) return [];
-
-    return prioritiesQuery.data.slice(1);
+    return prioritiesQuery.data;
   }, [prioritiesQuery.data, prioritiesQuery.isSuccess]);
+
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const clearSearchQuery = () => setSearchQuery("");
+
+  const { filteredPriorities } = useFuzzyFilterPriorities({
+    query: searchQuery,
+    priorities: unfilteredPriorities,
+  });
 
   return (
     <main className="container mt-6 flex flex-col">
@@ -66,23 +74,35 @@ export default function Home() {
             </Button>
           </div>
 
-          <div className="flex flex-col gap-4">
-            <Input className="max-w-[300px]" prefixElement={<LucideSearch />} />
-          </div>
+          <Input
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="max-w-[300px]"
+            prefixElement={<LucideSearch />}
+            suffixElement={
+              searchQuery.length > 0 ? (
+                <LucideX
+                  className="cursor-pointer"
+                  onClick={clearSearchQuery}
+                />
+              ) : null
+            }
+          />
         </div>
 
         <div className="flex flex-wrap gap-4 overflow-y-auto pb-4 pr-1">
-          {otherPriorities.map((p) => (
+          {filteredPriorities.map((p) => (
             <PriorityCard
               key={p.id}
               className="min-w-[350px]"
+              id={p.id}
               body={p.body}
               createdAt={p.createdAt}
               onDeleteClicked={() => deletePriorityByIdMutation.mutate(p.id)}
             ></PriorityCard>
           ))}
 
-          {otherPriorities.length === 0 && (
+          {unfilteredPriorities.length === 0 && (
             <EmptyText>No other priorities</EmptyText>
           )}
         </div>

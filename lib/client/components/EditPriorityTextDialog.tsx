@@ -7,29 +7,48 @@ import {
   DialogTitle,
   DialogDescription,
   DialogClose,
-} from "./ui/Dialog";
+} from "@/lib/client/components/ui/Dialog";
+import { useCallback, useRef } from "react";
+import { Button } from "@/lib/client/components/ui/Button";
+import { Textarea } from "@/lib/client/components/ui/Textarea";
 
 export const EditPriortyTextDialog: React.FC<{
+  open: boolean;
+  onOpenChange: (state: boolean) => void;
+
+  value: string;
   onChangesSubmitted: (text: Priority["body"]) => void;
-}> = () => {
+}> = (props) => {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const submitChanges = useCallback(() => {
+    if (!textareaRef.current) return;
+    props.onChangesSubmitted(textareaRef.current.value);
+  }, [props]);
+
   return (
-    <Dialog>
-      <DialogHeader>
-        <DialogTitle>Edit Priority Descriptions</DialogTitle>
-
-        <DialogDescription>
-          Change the text describing your priority
-        </DialogDescription>
-      </DialogHeader>
-
+    <Dialog open={props.open} onOpenChange={props.onOpenChange}>
       <DialogContent>
-        <textarea rows={5} />
-      </DialogContent>
+        <DialogHeader>
+          <DialogTitle>Edit Priority Descriptions</DialogTitle>
 
-      <DialogFooter>
-        <DialogClose>Ok</DialogClose>
-        <DialogClose>Cancel</DialogClose>
-      </DialogFooter>
+          <DialogDescription>
+            Change the text describing your priority
+          </DialogDescription>
+        </DialogHeader>
+
+        <Textarea defaultValue={props.value} ref={textareaRef} rows={5} />
+
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button>Cancel</Button>
+          </DialogClose>
+
+          <DialogClose onClick={submitChanges} asChild>
+            <Button variant="green">Ok</Button>
+          </DialogClose>
+        </DialogFooter>
+      </DialogContent>
     </Dialog>
   );
 };
