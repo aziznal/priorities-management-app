@@ -55,6 +55,7 @@ export async function POST(req: Request) {
     id: createUuid(),
     body: reqBody.body,
     order: lastOrder + 1,
+    createdAt: new Date().toISOString(),
   };
 
   await writeDb({ priorities: [...existingData.priorities, newPriority] });

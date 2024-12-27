@@ -76,10 +76,10 @@ export default function Home() {
             <PriorityCard
               key={p.id}
               className="min-w-[350px]"
+              body={p.body}
+              createdAt={p.createdAt}
               onDeleteClicked={() => deletePriorityByIdMutation.mutate(p.id)}
-            >
-              {p.body}
-            </PriorityCard>
+            ></PriorityCard>
           ))}
 
           {otherPriorities.length === 0 && (

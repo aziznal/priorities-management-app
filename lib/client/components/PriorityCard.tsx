@@ -1,10 +1,13 @@
 import { LucideGripVertical, LucideTrash } from "lucide-react";
-import { PropsWithChildren } from "react";
 import { cn } from "../utils";
+import { formatDate } from "@/lib/common/helpers/date";
 
-export const PriorityCard: React.FC<
-  PropsWithChildren & { onDeleteClicked: () => void; className?: string }
-> = ({ children, className, ...props }) => {
+export const PriorityCard: React.FC<{
+  body: string;
+  createdAt: string;
+  onDeleteClicked: () => void;
+  className?: string;
+}> = ({ body, createdAt, className, ...props }) => {
   return (
     <div
       className={cn(
@@ -12,10 +15,14 @@ export const PriorityCard: React.FC<
         className,
       )}
     >
-      <div className="flex items-center gap-2">
+      <div className="flex items-start gap-2">
         <LucideGripVertical />
 
-        <div>{children}</div>
+        <div className="flex flex-col gap-2">
+          <p>{body}</p>
+
+          <p className="text-sm text-zinc-500">{formatDate(createdAt)}</p>
+        </div>
       </div>
 
       <LucideTrash
