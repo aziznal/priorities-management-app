@@ -65,7 +65,18 @@ export const PriorityCard: React.FC<{
 
           <div className="flex flex-col gap-2">
             <div className="flex items-start gap-1">
-              <p className="">{props.body}</p>
+              <p className="flex flex-wrap gap-1">
+                <span
+                  className={cn(
+                    props.body.includes("(DONE)") &&
+                      "text-zinc-500 line-through",
+                  )}
+                >
+                  {props.body}
+                </span>
+
+                {props.body.includes("(DONE)") && <span> ✅</span>}
+              </p>
 
               <LucidePencil
                 onClick={() => setIsEditDialogOpen(true)}
