@@ -53,6 +53,14 @@ export const useDeletePriorityByIdMutation = () =>
 export const useUpdateManyPrioritesMutation = () =>
   useMutation({
     mutationFn: sendUpdateManyPrioritiesRequest,
+
+    onMutate(variables) {
+      queryClient.setQueryData(
+        priorityQueryKeyFactory.getAll(),
+        variables.priorities,
+      );
+    },
+
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: priorityQueryKeyFactory.getAll(),

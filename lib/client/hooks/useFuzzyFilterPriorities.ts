@@ -21,10 +21,6 @@ export function useFuzzyFilterPriorities(props: Props) {
       return props.priorities || [];
     }
 
-    console.log({
-      priorities: props.priorities,
-    });
-
     return props.priorities.filter((p) => {
       const body = normalizeString(p.body);
       const q = normalizeString(query);

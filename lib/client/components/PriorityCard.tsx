@@ -13,6 +13,8 @@ export const PriorityCard: React.FC<{
   createdAt: string;
   onDeleteClicked: () => void;
   className?: string;
+
+  isDraggingDisabled: boolean;
 }> = ({ className, ...props }) => {
   const sortable = useSortable({
     id: props.id,
@@ -43,15 +45,22 @@ export const PriorityCard: React.FC<{
     <>
       <div
         style={style}
-        {...sortable.attributes}
+        ref={sortable.setNodeRef}
         className={cn(
           "group/priority-body flex items-start justify-between gap-3 rounded-lg border-2 bg-lime-200 p-4 shadow-[4px_4px]",
           className,
         )}
       >
         <div className="flex items-start gap-2">
-          <div ref={sortable.setNodeRef} {...sortable.listeners}>
-            <LucideGripVertical className="shrink-0 cursor-grab active:cursor-grabbing" />
+          <div>
+            <LucideGripVertical
+              {...sortable.attributes}
+              {...sortable.listeners}
+              className={cn(
+                "shrink-0 cursor-grab focus:outline-none active:cursor-grabbing active:outline-none",
+                props.isDraggingDisabled && "cursor-not-allowed text-zinc-400",
+              )}
+            />
           </div>
 
           <div className="flex flex-col gap-2">

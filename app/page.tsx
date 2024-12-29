@@ -10,44 +10,27 @@ import { Button } from "@/lib/client/components";
 import {
   useCreatePriorityMutation,
   useDeletePriorityByIdMutation,
-  useGetPrioritiesQuery,
 } from "@/lib/client/data/priorities";
-import { useFuzzyFilterPriorities } from "@/lib/client/hooks";
-import { Priority } from "@/lib/common/types";
+import { usePriorities } from "@/lib/client/hooks/usePriorities";
 import { DndContext } from "@dnd-kit/core";
-import { SortableContext } from "@dnd-kit/sortable";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { LucideSearch, LucideX } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 export default function Home() {
-  const prioritiesQuery = useGetPrioritiesQuery();
-
   const createPriorityMutation = useCreatePriorityMutation();
   const deletePriorityByIdMutation = useDeletePriorityByIdMutation();
 
-  const topPriority = useMemo(() => {
-    if (!prioritiesQuery.isSuccess) return undefined;
-    return prioritiesQuery.data.find((p) => p.order === 1);
-  }, [prioritiesQuery.data, prioritiesQuery.isSuccess]);
-
-  const unfilteredPriorities: Priority[] = useMemo(() => {
-    if (!prioritiesQuery.isSuccess) return [];
-    return prioritiesQuery.data;
-  }, [prioritiesQuery.data, prioritiesQuery.isSuccess]);
-
   const [searchQuery, setSearchQuery] = useState("");
-
   const clearSearchQuery = () => setSearchQuery("");
 
-  const { filteredPriorities } = useFuzzyFilterPriorities({
-    query: searchQuery,
-    priorities: unfilteredPriorities,
+  const { priorities, topPriority, isFiltering, movePriority } = usePriorities({
+    searchQuery,
   });
-
-  const isFiltering = useMemo(
-    () => !!searchQuery && searchQuery.length > 0,
-    [searchQuery],
-  );
 
   return (
     <main className="container mt-6 flex flex-col">
@@ -93,13 +76,24 @@ export default function Home() {
           />
         </div>
 
-        <div className="flex flex-wrap gap-4 overflow-y-auto pb-4 pr-1">
-          <DndContext>
+        <div className="flex flex-col gap-4 overflow-y-auto overflow-x-visible pb-4 pr-1">
+          <DndContext
+            modifiers={[restrictToVerticalAxis]}
+            onDragEnd={(event) => {
+              if (!event.over) return;
+
+              movePriority({
+                fromId: event.active.id.toString(),
+                toId: event.over.id.toString(),
+              });
+            }}
+          >
             <SortableContext
-              items={unfilteredPriorities}
+              items={priorities}
               disabled={isFiltering}
+              strategy={verticalListSortingStrategy}
             >
-              {filteredPriorities.map((p) => (
+              {priorities.map((p) => (
                 <PriorityCard
                   key={p.id}
                   className="min-w-[350px]"
@@ -109,12 +103,13 @@ export default function Home() {
                   onDeleteClicked={() =>
                     deletePriorityByIdMutation.mutate(p.id)
                   }
+                  isDraggingDisabled={isFiltering}
                 />
               ))}
             </SortableContext>
           </DndContext>
 
-          {unfilteredPriorities.length === 0 && (
+          {priorities.length === 0 && (
             <EmptyText>No other priorities</EmptyText>
           )}
         </div>

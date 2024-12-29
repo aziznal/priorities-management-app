@@ -16,3 +16,12 @@ export function removeOrderGaps(data: Priority[]): Priority[] {
       order: i + 1,
     }));
 }
+
+/**
+ * Sets the orders of given priorities according to their current order */
+export function orderByIndex(data: Priority[]): Priority[] {
+  return data.map((p, i) => ({
+    ...p,
+    order: i + 1,
+  }));
+}
