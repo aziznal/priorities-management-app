@@ -2,11 +2,11 @@
 
 import {
   EmptyText,
-  Input,
   PriorityCard,
   TopPriorityCard,
 } from "@/lib/client/components";
 import { Button } from "@/lib/client/components";
+import { PriorityFilterInput } from "@/lib/client/components/PriorityFilterInput";
 import {
   useCreatePriorityMutation,
   useDeletePriorityByIdMutation,
@@ -18,7 +18,6 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { LucideSearch, LucideX } from "lucide-react";
 import { useState } from "react";
 
 export default function Home() {
@@ -26,7 +25,6 @@ export default function Home() {
   const deletePriorityByIdMutation = useDeletePriorityByIdMutation();
 
   const [searchQuery, setSearchQuery] = useState("");
-  const clearSearchQuery = () => setSearchQuery("");
 
   const { priorities, topPriority, isFiltering, movePriority } = usePriorities({
     searchQuery,
@@ -60,19 +58,9 @@ export default function Home() {
             </Button>
           </div>
 
-          <Input
+          <PriorityFilterInput
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="max-w-[300px]"
-            prefixElement={<LucideSearch />}
-            suffixElement={
-              searchQuery.length > 0 ? (
-                <LucideX
-                  className="cursor-pointer"
-                  onClick={clearSearchQuery}
-                />
-              ) : null
-            }
+            onValueChange={setSearchQuery}
           />
         </div>
 
