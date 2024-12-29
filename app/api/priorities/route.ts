@@ -29,8 +29,12 @@ export async function GET(): Promise<NextResponse> {
       message: "unknown error occurred while reading data",
     });
 
+  const sortedPriorities = data.priorities.toSorted(
+    (a, b) => a.order - b.order,
+  );
+
   return buildOkResponseWithData({
-    data: data.priorities,
+    data: sortedPriorities,
   } satisfies GetPrioritiesResponse);
 }
 

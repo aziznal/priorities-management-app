@@ -1,23 +1,20 @@
 import { cn } from "@/lib/client/utils";
-import { LucideGripVertical } from "lucide-react";
-import { PropsWithChildren } from "react";
+import { AnimatedBorderWrapper } from "./AnimatedBorderWrapper";
 
-export const TopPriorityCard: React.FC<
-  {
-    className?: string;
-  } & PropsWithChildren
-> = ({ className, children }) => {
+export const TopPriorityCard: React.FC<{
+  className?: string;
+  body: string;
+}> = (props) => {
   return (
-    <div
+    <AnimatedBorderWrapper
       className={cn(
-        "h-fit w-[300px] cursor-grab select-none rounded-xl border-2 bg-amber-500 p-4 shadow-[4px_4px] hover:border-2 lg:order-none",
-        className,
+        "flex items-center justify-center overflow-clip rounded-xl shadow-[4px_4px]",
+        props.className,
       )}
     >
-      <div className="flex items-center gap-2">
-        <LucideGripVertical />
-        {children}
+      <div className="flex h-full min-h-[250px] w-full max-w-[450px] items-center justify-center text-balance bg-white p-4 text-center">
+        <h1 className="text-2xl font-bold">{props.body}</h1>
       </div>
-    </div>
+    </AnimatedBorderWrapper>
   );
 };

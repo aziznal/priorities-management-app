@@ -1,0 +1,44 @@
+@property --border-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes animate-border-angle {
+  from {
+    --border-angle: 0deg;
+  }
+  to {
+    --border-angle: 360deg;
+  }
+}
+
+.animated-border {
+  --border-angle: 0deg;
+
+  box-sizing: border-box;
+
+  animation: animate-border-angle 2s infinite linear;
+
+  border-style: solid;
+  border-color: transparent;
+
+  --color-intensity: 0.2;
+
+  /* taken from catppuccin latte theme */
+  --color-1: oklch(91.93% var(--color-intensity) 86.53); /* yellow */
+  --color-2: oklch(85.77% var(--color-intensity) 142.72); /* green */
+  --color-3: oklch(75.56% var(--color-intensity) 2.76); /* red */
+
+  background:
+    linear-gradient(transparent, transparent) padding-box,
+    /* note: firsta and last color should match to avoid a cut-out line */
+      conic-gradient(
+        from var(--border-angle),
+        var(--color-1),
+        var(--color-2),
+        var(--color-3),
+        var(--color-1)
+      )
+      border-box;
+}
