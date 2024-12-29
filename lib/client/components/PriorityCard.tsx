@@ -6,6 +6,7 @@ import { useUpdatePriorityMutation } from "../data/priorities";
 import { useCallback, useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { ConfirmDeleteDialog } from "./ConfirmDeleteDialog";
 
 export const PriorityCard: React.FC<{
   id: string;
@@ -21,6 +22,8 @@ export const PriorityCard: React.FC<{
   });
 
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isConfirmDeleteDialogOpen, setIsConfirmDeleteDialogOpen] =
+    useState(false);
 
   const updateTextMutation = useUpdatePriorityMutation();
 
@@ -35,6 +38,10 @@ export const PriorityCard: React.FC<{
     },
     [props.id, updateTextMutation],
   );
+
+  const confirmDelete = () => {
+    setIsConfirmDeleteDialogOpen(true);
+  };
 
   const style = {
     transform: CSS.Transform.toString(sortable.transform),
@@ -93,7 +100,7 @@ export const PriorityCard: React.FC<{
 
         <LucideTrash
           className="shrink-0 cursor-pointer"
-          onClick={props.onDeleteClicked}
+          onClick={confirmDelete}
           size="20"
         />
       </div>
@@ -103,6 +110,12 @@ export const PriorityCard: React.FC<{
         onOpenChange={setIsEditDialogOpen}
         value={props.body}
         onChangesSubmitted={updateText}
+      />
+
+      <ConfirmDeleteDialog
+        open={isConfirmDeleteDialogOpen}
+        onOpenChange={setIsConfirmDeleteDialogOpen}
+        onConfirm={props.onDeleteClicked}
       />
     </>
   );
