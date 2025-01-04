@@ -1,5 +1,4 @@
 import { priorityIdSchema } from "@/lib/common/schemas";
-import { readDb, writeDb } from "@/lib/server/data";
 import { parseWithSchema } from "@/lib/server/helpers";
 import {
   buildBadRequestResponse,
@@ -10,6 +9,11 @@ import {
 import { z } from "zod";
 import { updatePriorityRequestSchema } from "../schema";
 import { removeOrderGaps } from "@/lib/common/core";
+import { createClient } from "@/lib/db/supabase/server";
+import {
+  mapManyPrioritiesToClient,
+  mapManyPrioritiesToServer,
+} from "@/lib/server/mappers/priority";
 
 const paramsSchema = z.object({
   id: priorityIdSchema,
@@ -32,27 +36,33 @@ export async function PATCH(req: Request, ctx: Props) {
 
   if (!params || !reqBody) return buildBadRequestResponse();
 
-  const existingData = await readDb();
+  const supabase = await createClient();
 
-  if (!existingData) return buildServerErrorResponse();
+  const prioritiesQuery = await supabase.from("priorities").select();
 
-  const existingPriority = existingData.priorities.find(
-    (p) => p.id === params.id,
-  );
+  if (!prioritiesQuery.data || prioritiesQuery.error)
+    return buildServerErrorResponse({
+      message: "unknown error occurred while reading data",
+    });
+
+  const existingPriority = prioritiesQuery.data.find((p) => p.id === params.id);
 
   if (!existingPriority) return buildNotFoundResponse();
 
-  const updatedPriorities = existingData.priorities.map((p) => {
-    if (p.id === params.id)
-      return {
-        ...p,
-        body: reqBody.body ?? "",
-      };
+  const updatedPriority = {
+    ...existingPriority,
+    body: reqBody.body,
+  };
 
-    return p;
-  });
+  const updateQuery = await supabase
+    .from("priorities")
+    .update(updatedPriority)
+    .eq("id", existingPriority.id);
 
-  await writeDb({ priorities: updatedPriorities });
+  if (updateQuery.error)
+    return buildServerErrorResponse({
+      message: "Something went wrong while updating priority",
+    });
 
   return buildOkResponse();
 }
@@ -65,21 +75,43 @@ export async function DELETE(_req: Request, ctx: Props) {
 
   if (!params) return buildBadRequestResponse();
 
-  const existingData = await readDb();
+  const supabase = await createClient();
 
-  if (!existingData) return buildServerErrorResponse();
+  const prioritiesQuery = await supabase.from("priorities").select();
 
-  const existingPriority = existingData.priorities.find(
-    (p) => p.id === params.id,
-  );
+  if (!prioritiesQuery.data || prioritiesQuery.error)
+    return buildServerErrorResponse({
+      message: "unknown error occurred while reading data",
+    });
 
-  if (!existingPriority) return buildNotFoundResponse();
+  const deletedPriority = prioritiesQuery.data.find((p) => p.id === params.id);
+
+  if (!deletedPriority) return buildNotFoundResponse();
 
   const updatedPriorities = removeOrderGaps(
-    existingData.priorities.filter((p) => p.id !== params.id),
+    mapManyPrioritiesToClient(prioritiesQuery.data).filter(
+      (p) => p.id !== deletedPriority.id,
+    ),
   );
 
-  await writeDb({ priorities: updatedPriorities });
+  const deleteQuery = await supabase
+    .from("priorities")
+    .delete()
+    .eq("id", deletedPriority.id);
+
+  if (deleteQuery.error)
+    return buildServerErrorResponse({
+      message: "Something went wrong while deleting priorities",
+    });
+
+  const upsertQuery = await supabase
+    .from("priorities")
+    .upsert(mapManyPrioritiesToServer(updatedPriorities));
+
+  if (upsertQuery.error)
+    return buildServerErrorResponse({
+      message: "Something went wrong while updating priorities",
+    });
 
   return buildOkResponse();
 }

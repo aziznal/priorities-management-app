@@ -8,29 +8,34 @@ import {
 } from "./schema";
 import {
   buildBadRequestResponse,
-  buildNotFoundResponse,
   buildOkResponse,
   buildOkResponseWithData,
   buildServerErrorResponse,
 } from "@/lib/server/helpers";
-import { readDb, writeDb } from "@/lib/server/data";
 import { getLastOrder, removeOrderGaps } from "@/lib/common/core";
 import { createUuid } from "@/lib/common/helpers";
+import { createClient } from "@/lib/db/supabase/server";
+import {
+  mapManyPrioritiesToClient,
+  mapManyPrioritiesToServer,
+} from "@/lib/server/mappers/priority";
 
 export type GetPrioritiesResponse = {
   data: Priority[];
 };
 
 export async function GET(): Promise<NextResponse> {
-  const data = await readDb();
+  const supabase = await createClient();
 
-  if (!data)
+  const prioritiesQuery = await supabase.from("priorities").select();
+
+  if (!prioritiesQuery.data || prioritiesQuery.error)
     return buildServerErrorResponse({
       message: "unknown error occurred while reading data",
     });
 
-  const sortedPriorities = data.priorities.toSorted(
-    (a, b) => a.order - b.order,
+  const sortedPriorities = mapManyPrioritiesToClient(
+    prioritiesQuery.data.toSorted((a, b) => a.order - b.order),
   );
 
   return buildOkResponseWithData({
@@ -46,14 +51,25 @@ export async function POST(req: Request) {
 
   if (!reqBody) return buildBadRequestResponse();
 
-  const existingData = await readDb();
+  const supabase = await createClient();
 
-  if (!existingData)
+  const existingPrioritiesQuery = await supabase.from("priorities").select();
+
+  if (!existingPrioritiesQuery.data || existingPrioritiesQuery.error)
+    return buildServerErrorResponse({
+      message: "unknown error occurred while reading data",
+    });
+
+  if (!existingPrioritiesQuery.data || existingPrioritiesQuery.error)
     return buildServerErrorResponse({
       message: "Could not write new data because I lost the DB :'(",
     });
 
-  const lastOrder = getLastOrder(existingData.priorities);
+  const existingPriorities = mapManyPrioritiesToClient(
+    existingPrioritiesQuery.data,
+  );
+
+  const lastOrder = getLastOrder(existingPriorities);
 
   const newPriority: Priority = {
     id: createUuid(),
@@ -62,7 +78,14 @@ export async function POST(req: Request) {
     createdAt: new Date().toISOString(),
   };
 
-  await writeDb({ priorities: [...existingData.priorities, newPriority] });
+  const upsertQuery = await supabase
+    .from("priorities")
+    .upsert(mapManyPrioritiesToServer([...existingPriorities, newPriority]));
+
+  if (upsertQuery.error)
+    return buildServerErrorResponse({
+      message: "Something went wrong while updating priorities",
+    });
 
   return buildOkResponse();
 }
@@ -75,7 +98,16 @@ export async function PATCH(req: NextRequest) {
 
   if (!reqBody) return buildBadRequestResponse();
 
-  await writeDb({ priorities: reqBody.priorities });
+  const supabase = await createClient();
+
+  const upsertQuery = await supabase
+    .from("priorities")
+    .upsert(mapManyPrioritiesToServer(reqBody.priorities));
+
+  if (upsertQuery.error)
+    return buildServerErrorResponse({
+      message: "Something went wrong while updating priorities",
+    });
 
   return buildOkResponse();
 }
@@ -88,15 +120,29 @@ export async function DELETE(req: NextRequest) {
 
   if (!reqBody) return buildBadRequestResponse();
 
-  const existingData = await readDb();
+  const supabase = await createClient();
 
-  if (!existingData) return buildNotFoundResponse();
+  const prioritiesQuery = await supabase.from("priorities").select();
+
+  if (!prioritiesQuery.data || prioritiesQuery.error)
+    return buildServerErrorResponse({
+      message: "Something went wrong while fetching priorities",
+    });
+
+  const existingPriorities = mapManyPrioritiesToClient(prioritiesQuery.data);
 
   const updatedPriorities = removeOrderGaps(
-    existingData.priorities.filter((p) => !reqBody.priorityIds.includes(p.id)),
+    existingPriorities.filter((p) => !reqBody.priorityIds.includes(p.id)),
   );
 
-  await writeDb({ priorities: updatedPriorities });
+  const upsertQuery = await supabase
+    .from("priorities")
+    .upsert(mapManyPrioritiesToServer(updatedPriorities));
+
+  if (upsertQuery.error)
+    return buildServerErrorResponse({
+      message: "Something went wrong while updating priorities",
+    });
 
   return buildOkResponse();
 }
