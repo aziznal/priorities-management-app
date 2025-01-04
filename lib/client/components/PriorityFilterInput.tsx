@@ -1,8 +1,10 @@
 import { Input } from "@/lib/client/components";
 import { LucideSearch, LucideX } from "lucide-react";
 import { useEffect, useRef } from "react";
+import { cn } from "../utils";
 
 export const PriorityFilterInput: React.FC<{
+  className?: string;
   value: string;
   onValueChange: (value: string) => void;
 }> = (props) => {
@@ -38,7 +40,7 @@ export const PriorityFilterInput: React.FC<{
       onChange={(e) => props.onValueChange(e.target.value)}
       placeholder="/"
       ref={inputRef}
-      className="max-w-[300px]"
+      className={cn("max-w-[300px]", props.className)}
       prefixElement={<LucideSearch />}
       suffixElement={
         props.value.length > 0 ? (

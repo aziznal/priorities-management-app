@@ -11,19 +11,19 @@ type Props = {
   searchQuery?: string;
 };
 
-export function usePriorities(props: Props) {
+export function usePriorities(props?: Props) {
   const prioritiesQuery = useGetPrioritiesQuery();
 
   const updateManyPrioritiesMutation = useUpdateManyPrioritesMutation();
 
   const { filteredPriorities } = useFuzzyFilterPriorities({
-    query: props.searchQuery,
+    query: props?.searchQuery,
     priorities: prioritiesQuery.data,
   });
 
   const isFiltering = useMemo(
-    () => !!props.searchQuery && props.searchQuery.length > 0,
-    [props.searchQuery],
+    () => !!props?.searchQuery && props.searchQuery.length > 0,
+    [props?.searchQuery],
   );
 
   const priorities = useMemo(() => {
