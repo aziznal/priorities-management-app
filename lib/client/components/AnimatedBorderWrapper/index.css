@@ -36,6 +36,7 @@
       conic-gradient(
         from var(--border-angle),
         var(--color-1),
+        var(--color-3),
         var(--color-2),
         var(--color-3),
         var(--color-1)
