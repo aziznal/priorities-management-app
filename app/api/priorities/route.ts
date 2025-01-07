@@ -12,12 +12,13 @@ import {
   buildOkResponseWithData,
   buildServerErrorResponse,
 } from "@/lib/server/helpers";
-import { getLastOrder, removeOrderGaps } from "@/lib/common/core";
+import { removeOrderGaps } from "@/lib/common/core";
 import { createUuid } from "@/lib/common/helpers";
 import { createClient } from "@/lib/db/supabase/server";
 import {
   mapManyPrioritiesToClient,
   mapManyPrioritiesToServer,
+  mapOnePriorityToServer,
 } from "@/lib/server/mappers/priority";
 
 export const runtime = "edge";
@@ -29,19 +30,18 @@ export type GetPrioritiesResponse = {
 export async function GET(): Promise<NextResponse> {
   const supabase = await createClient();
 
-  const prioritiesQuery = await supabase.from("priorities").select();
+  const prioritiesQuery = await supabase
+    .from("priorities")
+    .select()
+    .order("order");
 
   if (!prioritiesQuery.data || prioritiesQuery.error)
     return buildServerErrorResponse({
       message: "unknown error occurred while reading data",
     });
 
-  const sortedPriorities = mapManyPrioritiesToClient(
-    prioritiesQuery.data.toSorted((a, b) => a.order - b.order),
-  );
-
   return buildOkResponseWithData({
-    data: sortedPriorities,
+    data: mapManyPrioritiesToClient(prioritiesQuery.data),
   } satisfies GetPrioritiesResponse);
 }
 
@@ -55,23 +55,22 @@ export async function POST(req: Request) {
 
   const supabase = await createClient();
 
-  const existingPrioritiesQuery = await supabase.from("priorities").select();
+  const biggestOrderQuery = await supabase
+    .from("priorities")
+    .select()
+    .order("order", {
+      ascending: false,
+    })
+    .limit(1)
+    .maybeSingle();
 
-  if (!existingPrioritiesQuery.data || existingPrioritiesQuery.error)
+  if (biggestOrderQuery.error)
     return buildServerErrorResponse({
       message: "unknown error occurred while reading data",
     });
 
-  if (!existingPrioritiesQuery.data || existingPrioritiesQuery.error)
-    return buildServerErrorResponse({
-      message: "Could not write new data because I lost the DB :'(",
-    });
-
-  const existingPriorities = mapManyPrioritiesToClient(
-    existingPrioritiesQuery.data,
-  );
-
-  const lastOrder = getLastOrder(existingPriorities);
+  // if no data, then must be adding first element
+  const lastOrder = biggestOrderQuery.data?.order ?? 0;
 
   const newPriority: Priority = {
     id: createUuid(),
@@ -80,13 +79,13 @@ export async function POST(req: Request) {
     createdAt: new Date().toISOString(),
   };
 
-  const upsertQuery = await supabase
+  const insertQuery = await supabase
     .from("priorities")
-    .upsert(mapManyPrioritiesToServer([...existingPriorities, newPriority]));
+    .insert(mapOnePriorityToServer(newPriority));
 
-  if (upsertQuery.error)
+  if (insertQuery.error)
     return buildServerErrorResponse({
-      message: "Something went wrong while updating priorities",
+      message: "Something went wrong while inserting priority",
     });
 
   return buildOkResponse();
