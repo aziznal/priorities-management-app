@@ -20,6 +20,8 @@ import {
   mapManyPrioritiesToServer,
 } from "@/lib/server/mappers/priority";
 
+export const runtime = "edge";
+
 export type GetPrioritiesResponse = {
   data: Priority[];
 };
