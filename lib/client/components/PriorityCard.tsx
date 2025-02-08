@@ -67,7 +67,7 @@ export const PriorityCard: React.FC<{
               {...sortable.attributes}
               {...sortable.listeners}
               className={cn(
-                "shrink-0 cursor-grab focus:outline-none active:cursor-grabbing active:outline-none",
+                "shrink-0 cursor-grab focus:outline-none active:cursor-grabbing active:outline-none touch-none",
                 props.isDraggingDisabled && "cursor-not-allowed text-lime-600",
               )}
             />
