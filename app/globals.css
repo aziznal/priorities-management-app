@@ -2,17 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
-  @apply border-zinc-900;
-}
-
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
-
 @layer base {
   :root {
     --radius: 0.5rem;
   }
 }
 
+* {
+  @apply border-zinc-900 shadow-black;
+}
+
+.dark * {
+  @apply border-slate-950 shadow-slate-950;
+}

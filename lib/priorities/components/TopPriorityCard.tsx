@@ -21,7 +21,7 @@ export const TopPriorityCard: React.FC<{
     >
       <div
         className={cn(
-          "relative flex h-full min-h-[250px] w-full items-center justify-center bg-white p-4",
+          "relative flex h-full min-h-[250px] w-full items-center justify-center bg-white p-4 dark:bg-emerald-950",
         )}
       >
         <IconButton

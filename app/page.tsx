@@ -20,20 +20,26 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import { DarkmodeToggle } from "@/lib/common/darkmode/DarkmodeToggle";
 
 export const runtime = "edge";
+export const dynamic = "force-dynamic";
 
 export default function Home() {
   return (
-    <main className="container mt-6 flex flex-col">
-      <h1 className="mb-8 text-balance text-center text-3xl font-black">
-        PRIORITIES MANAGEMENT
-      </h1>
+    <div className="mt-6 flex flex-col">
+      <DarkmodeToggle className="self-end mx-4 mb-4 sm:mb-0" />
 
-      <TopPrioritySection />
+      <main className="container">
+        <h1 className="mb-8 text-balance text-center text-3xl font-black">
+          PRIORITIES MANAGEMENT
+        </h1>
 
-      <OtherPrioritiesSection />
-    </main>
+        <TopPrioritySection />
+
+        <OtherPrioritiesSection />
+      </main>
+    </div>
   );
 }
 

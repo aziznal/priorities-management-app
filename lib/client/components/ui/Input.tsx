@@ -11,8 +11,28 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div
         className={cn(
-          `box-border flex h-[40px] w-full items-center rounded-full border-2 bg-white px-2 shadow-[3px_4px]`,
-          "focus-within:bg-lime-400 hover:bg-lime-400 hover:outline-none active:bg-lime-400 active:outline-none",
+          `box-border
+          flex
+          h-[40px]
+          w-full
+          items-center
+          rounded-full
+          border-2
+          bg-white
+          text-white
+          px-2
+          shadow-[3px_4px]
+
+          focus-within:bg-lime-400
+          hover:bg-lime-400
+          hover:outline-none
+          active:bg-lime-400
+          active:outline-none
+
+          dark:bg-emerald-950
+          dark:focus-within:bg-emerald-800
+          dark:hover:bg-emerald-800
+          dark:active:bg-emerald-800`,
           className,
         )}
       >

@@ -18,27 +18,47 @@
 
   box-sizing: border-box;
 
-  animation: animate-border-angle 2s infinite linear;
+  animation: animate-border-angle 4s infinite linear;
 
   border-style: solid;
   border-color: transparent;
 
-  --color-intensity: 0.2;
+  --color-intensity: 0.3;
 
   /* taken from catppuccin latte theme */
   --color-1: oklch(91.93% var(--color-intensity) 86.53); /* yellow */
   --color-2: oklch(85.77% var(--color-intensity) 142.72); /* green */
   --color-3: oklch(75.56% var(--color-intensity) 2.76); /* red */
 
+  *.dark & {
+    --color-intensity: 0.2;
+
+    /* slate */
+    /* cyan */
+    /* indigo */
+
+    --color-1: oklch(47.91% var(--color-intensity) 189.199);
+    --color-3: oklch(20.71% var(--color-intensity) 266.32);
+    --color-2: oklch(63.78% var(--color-intensity) 280.95);
+  }
+
   background:
     linear-gradient(transparent, transparent) padding-box,
-    /* note: firsta and last color should match to avoid a cut-out line */
+    /* note: first and last color should match to avoid a cut-out line */
       conic-gradient(
         from var(--border-angle),
         var(--color-1),
         var(--color-3),
         var(--color-2),
+        var(--color-1),
         var(--color-3),
+        var(--color-2),
+        var(--color-1),
+        var(--color-3),
+        var(--color-2),
+        var(--color-1),
+        var(--color-3),
+        var(--color-2),
         var(--color-1)
       )
       border-box;
