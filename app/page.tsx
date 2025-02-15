@@ -1,23 +1,25 @@
 "use client";
 
-import {
-  EmptyText,
-} from "@/lib/client/components";
-import { Button } from "@/lib/client/components";
-import { LoadingSpinner } from "@/lib/client/components/LoadingSpinner";
+import { useState } from "react";
+
 import { cn } from "@/lib/client/utils";
+import { Button, LoadingSpinner, EmptyText } from "@/lib/client/components";
+
 import { PriorityCard } from "@/lib/priorities/components/PriorityCard";
 import { PriorityFilterInput } from "@/lib/priorities/components/PriorityFilterInput";
 import { TopPriorityCard } from "@/lib/priorities/components/TopPriorityCard";
 import { usePriorities } from "@/lib/priorities/hooks/usePriorities";
-import { useCreatePriorityMutation, useDeletePriorityByIdMutation } from "@/lib/priorities/queries";
+import {
+  useCreatePriorityMutation,
+  useDeletePriorityByIdMutation,
+} from "@/lib/priorities/queries";
+
 import { DndContext } from "@dnd-kit/core";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { useState } from "react";
 
 export const runtime = "edge";
 

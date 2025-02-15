@@ -1,5 +1,6 @@
-export * from "./EmptyText";
 export { AnimatedBorderWrapper } from "./AnimatedBorderWrapper";
+export * from "./EmptyText";
+export * from "./LoadingSpinner";
 
 export * from "./ui/buttons/Button";
 export * from "./ui/buttons/IconButton";
