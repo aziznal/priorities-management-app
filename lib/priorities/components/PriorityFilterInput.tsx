@@ -19,6 +19,15 @@ export const PriorityFilterInput: React.FC<{
     if (!inputElement) return;
 
     const focusInput = (e: KeyboardEvent) => {
+      // make sure we're not typing in an input
+      const currentElementInFocus = document.activeElement;
+
+      if (
+        currentElementInFocus?.tagName === "INPUT" ||
+        currentElementInFocus?.tagName === "TEXTAREA"
+      )
+        return;
+
       if (e.key !== "/") return;
 
       e.preventDefault();
