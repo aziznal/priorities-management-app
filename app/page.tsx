@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { cn } from "@/lib/client/utils";
 import { Button, LoadingSpinner, EmptyText } from "@/lib/client/components";
@@ -42,6 +42,23 @@ const TopPrioritySection: React.FC = () => {
 
   const [isFullscreen, setIsFullscreen] = useState(false);
   const toggleFullscreen = () => setIsFullscreen((v) => !v);
+
+  // shortcut to cancel fullscreen
+  useEffect(() => {
+    if (!isFullscreen) return;
+
+    const cancelFullscreen = (e: KeyboardEvent) => {
+      console.log({ key: e.key });
+
+      if (e.key !== "Escape") return;
+
+      setIsFullscreen(false);
+    };
+
+    window.addEventListener("keydown", cancelFullscreen);
+
+    return () => window.removeEventListener("keydown", cancelFullscreen);
+  }, [isFullscreen]);
 
   if (isLoading)
     return (
