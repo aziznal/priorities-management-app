@@ -28,7 +28,7 @@ export const dynamic = "force-dynamic";
 export default function Home() {
   return (
     <div className="mt-6 flex flex-col">
-      <DarkmodeToggle className="self-end mx-4 mb-4 sm:mb-0" />
+      <DarkmodeToggle className="mx-4 mb-4 self-end sm:mb-0" />
 
       <main className="container">
         <h1 className="mb-8 text-balance text-center text-3xl font-black">
@@ -47,23 +47,30 @@ const TopPrioritySection: React.FC = () => {
   const { topPriority, isLoading, isError } = usePriorities();
 
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const toggleFullscreen = () => setIsFullscreen((v) => !v);
+
+  const enableFullscreen = () => {
+    document.documentElement.requestFullscreen();
+    setIsFullscreen(true);
+  };
+
+  const disableFullscreen = () => {
+    document.exitFullscreen();
+    setIsFullscreen(false);
+  };
 
   // shortcut to cancel fullscreen
   useEffect(() => {
     if (!isFullscreen) return;
 
-    const cancelFullscreen = (e: KeyboardEvent) => {
-      console.log({ key: e.key });
-
+    const handleCancelFullscreenEvent = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
-
       setIsFullscreen(false);
     };
 
-    window.addEventListener("keydown", cancelFullscreen);
+    window.addEventListener("keydown", handleCancelFullscreenEvent);
 
-    return () => window.removeEventListener("keydown", cancelFullscreen);
+    return () =>
+      window.removeEventListener("keydown", handleCancelFullscreenEvent);
   }, [isFullscreen]);
 
   if (isLoading)
@@ -80,7 +87,7 @@ const TopPrioritySection: React.FC = () => {
       className={cn(
         "mb-16 flex flex-col items-center",
         isFullscreen &&
-          "fixed left-0 top-0 z-50 h-[100dvh] w-[98dvw] justify-center",
+          "fixed left-0 top-0 z-50 h-[100dvh] w-[99dvw] justify-center",
       )}
     >
       <h2
@@ -96,7 +103,9 @@ const TopPrioritySection: React.FC = () => {
         <TopPriorityCard
           body={topPriority.body}
           isFullscreen={isFullscreen}
-          onFullscreenToggled={toggleFullscreen}
+          onFullscreenToggled={
+            isFullscreen ? disableFullscreen : enableFullscreen
+          }
         />
       )}
 
