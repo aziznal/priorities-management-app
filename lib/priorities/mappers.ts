@@ -1,5 +1,5 @@
-import { Priority } from "@/lib/common/types";
 import { Database } from "@/lib/db/supabase/database.types";
+import { Priority } from "./core/priority-type";
 
 type DatabasePriority = Database["public"]["Tables"]["priorities"]["Row"];
 

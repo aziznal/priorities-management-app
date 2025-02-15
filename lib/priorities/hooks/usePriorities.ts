@@ -1,11 +1,8 @@
 import { useMemo } from "react";
-import {
-  useGetPrioritiesQuery,
-  useUpdateManyPrioritesMutation,
-} from "../data/priorities";
 import { useFuzzyFilterPriorities } from "./useFuzzyFilterPriorities";
 import { moveItem } from "@/lib/common/helpers/array";
-import { orderByIndex } from "@/lib/common/core";
+import { useGetPrioritiesQuery, useUpdateManyPrioritesMutation } from "../queries";
+import { orderByIndex } from "../core/utils";
 
 type Props = {
   searchQuery?: string;

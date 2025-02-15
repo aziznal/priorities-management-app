@@ -1,7 +1,7 @@
 import { cn } from "@/lib/client/utils";
-import { AnimatedBorderWrapper } from "./AnimatedBorderWrapper";
 import { IconButton } from "@/lib/client/components";
 import { LucideFullscreen } from "lucide-react";
+import { AnimatedBorderWrapper } from "@/lib/client/components/AnimatedBorderWrapper";
 
 export const TopPriorityCard: React.FC<{
   className?: string;

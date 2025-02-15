@@ -1,4 +1,4 @@
-import { Priority } from "@/lib/common/types";
+import { Priority } from "../core/priority-type";
 import { useCallback, useRef } from "react";
 import {
   Button,

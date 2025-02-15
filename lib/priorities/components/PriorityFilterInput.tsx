@@ -1,7 +1,7 @@
 import { Input } from "@/lib/client/components";
+import { cn } from "@/lib/client/utils";
 import { LucideSearch, LucideX } from "lucide-react";
 import { useEffect, useRef } from "react";
-import { cn } from "../utils";
 
 export const PriorityFilterInput: React.FC<{
   className?: string;

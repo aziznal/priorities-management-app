@@ -1,7 +1,5 @@
 export * from "./EmptyText";
-
-export * from "./PriorityCard";
-export * from "./TopPriorityCard";
+export { AnimatedBorderWrapper } from "./AnimatedBorderWrapper";
 
 export * from "./ui/buttons/Button";
 export * from "./ui/buttons/IconButton";

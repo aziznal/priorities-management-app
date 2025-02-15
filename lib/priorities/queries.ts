@@ -1,13 +1,9 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { queryClient } from "@/lib/client/query-client";
-import {
-  sendGetPrioritiesRequest,
-  sendUpdateManyPrioritiesRequest,
-  sendUpdatePriorityByIdRequest,
-  sendDeleteManyPrioritiesRequest,
-  sendDeletePriorityByIdRequest,
-  sendCreateNewPriorityRequest,
-} from ".";
+import { createNewPriority } from "./actions/create";
+import { deletePriorityById, deleteManyPriorities } from "./actions/delete";
+import { getPriorities } from "./actions/get";
+import { updatePriorityById, updateManyPriorities } from "./actions/update";
 
 export const priorityQueryKeyFactory = {
   all: "priorities",
@@ -17,12 +13,12 @@ export const priorityQueryKeyFactory = {
 export const useGetPrioritiesQuery = () =>
   useQuery({
     queryKey: priorityQueryKeyFactory.getAll(),
-    queryFn: sendGetPrioritiesRequest,
+    queryFn: getPriorities,
   });
 
 export const useCreatePriorityMutation = () =>
   useMutation({
-    mutationFn: sendCreateNewPriorityRequest,
+    mutationFn: createNewPriority,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: priorityQueryKeyFactory.getAll(),
@@ -32,7 +28,7 @@ export const useCreatePriorityMutation = () =>
 
 export const useUpdatePriorityMutation = () =>
   useMutation({
-    mutationFn: sendUpdatePriorityByIdRequest,
+    mutationFn: updatePriorityById,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: priorityQueryKeyFactory.getAll(),
@@ -42,7 +38,7 @@ export const useUpdatePriorityMutation = () =>
 
 export const useDeletePriorityByIdMutation = () =>
   useMutation({
-    mutationFn: sendDeletePriorityByIdRequest,
+    mutationFn: deletePriorityById,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: priorityQueryKeyFactory.getAll(),
@@ -52,7 +48,7 @@ export const useDeletePriorityByIdMutation = () =>
 
 export const useUpdateManyPrioritesMutation = () =>
   useMutation({
-    mutationFn: sendUpdateManyPrioritiesRequest,
+    mutationFn: updateManyPriorities,
 
     onMutate(variables) {
       queryClient.setQueryData(
@@ -70,7 +66,7 @@ export const useUpdateManyPrioritesMutation = () =>
 
 export const useDeleteManyPrioritiesMutation = () =>
   useMutation({
-    mutationFn: sendDeleteManyPrioritiesRequest,
+    mutationFn: deleteManyPriorities,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: priorityQueryKeyFactory.getAll(),

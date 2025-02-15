@@ -1,13 +1,13 @@
 import { LucideGripVertical, LucidePencil, LucideTrash } from "lucide-react";
-import { cn } from "../utils";
 import { getElapsedTime } from "@/lib/common/helpers/date";
 import { EditPriortyTextDialog } from "./EditPriorityTextDialog";
-import { useUpdatePriorityMutation } from "../data/priorities";
 import { useCallback, useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { ConfirmDeleteDialog } from "./ConfirmDeleteDialog";
-import { IconButton } from "./ui/buttons/IconButton";
+import { IconButton } from "@/lib/client/components";
+import { ConfirmDeleteDialog } from "@/lib/client/components/ConfirmDeleteDialog";
+import { cn } from "@/lib/client/utils";
+import { useUpdatePriorityMutation } from "../queries";
 
 export const PriorityCard: React.FC<{
   id: string;
@@ -33,7 +33,7 @@ export const PriorityCard: React.FC<{
   const updateText = useCallback(
     (text: string) => {
       return updateTextMutation.mutate({
-        id: props.id,
+        priorityId: props.id,
         updatedPriority: {
           body: text,
         },

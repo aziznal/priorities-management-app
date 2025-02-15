@@ -1,6 +1,6 @@
 import { normalizeString } from "@/lib/common/helpers/string";
-import { Priority } from "@/lib/common/types";
 import { useMemo } from "react";
+import { Priority } from "../core/priority-type";
 
 type Props = {
   query?: string;

@@ -1,4 +1,4 @@
-import { Priority } from "./types/priority";
+import { Priority } from "./priority-type";
 
 export function getLastOrder(data: Priority[]): number {
   if (data.length === 0) return 0;
@@ -6,7 +6,8 @@ export function getLastOrder(data: Priority[]): number {
 }
 
 /**
- * makes sure all orders are sequential with no gaps e.g. from deleting a priority
+ * makes sure all orders are sequential with no
+ * gaps e.g. from deleting a priority
  */
 export function removeOrderGaps(data: Priority[]): Priority[] {
   return data
@@ -18,10 +19,12 @@ export function removeOrderGaps(data: Priority[]): Priority[] {
 }
 
 /**
- * Sets the orders of given priorities according to their current order */
+ * Sets the orders of given priorities according to their current order
+ */
 export function orderByIndex(data: Priority[]): Priority[] {
   return data.map((p, i) => ({
     ...p,
     order: i + 1,
   }));
 }
+

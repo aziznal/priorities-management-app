@@ -2,18 +2,15 @@
 
 import {
   EmptyText,
-  PriorityCard,
-  TopPriorityCard,
 } from "@/lib/client/components";
 import { Button } from "@/lib/client/components";
 import { LoadingSpinner } from "@/lib/client/components/LoadingSpinner";
-import { PriorityFilterInput } from "@/lib/client/components/PriorityFilterInput";
-import {
-  useCreatePriorityMutation,
-  useDeletePriorityByIdMutation,
-} from "@/lib/client/data/priorities";
-import { usePriorities } from "@/lib/client/hooks/usePriorities";
 import { cn } from "@/lib/client/utils";
+import { PriorityCard } from "@/lib/priorities/components/PriorityCard";
+import { PriorityFilterInput } from "@/lib/priorities/components/PriorityFilterInput";
+import { TopPriorityCard } from "@/lib/priorities/components/TopPriorityCard";
+import { usePriorities } from "@/lib/priorities/hooks/usePriorities";
+import { useCreatePriorityMutation, useDeletePriorityByIdMutation } from "@/lib/priorities/queries";
 import { DndContext } from "@dnd-kit/core";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import {
@@ -21,6 +18,8 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { useState } from "react";
+
+export const runtime = "edge";
 
 export default function Home() {
   return (
