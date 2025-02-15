@@ -13,6 +13,7 @@ import {
   useDeletePriorityByIdMutation,
 } from "@/lib/client/data/priorities";
 import { usePriorities } from "@/lib/client/hooks/usePriorities";
+import { cn } from "@/lib/client/utils";
 import { DndContext } from "@dnd-kit/core";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import {
@@ -38,9 +39,12 @@ export default function Home() {
 const TopPrioritySection: React.FC = () => {
   const { topPriority, isLoading, isError } = usePriorities();
 
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const toggleFullscreen = () => setIsFullscreen((v) => !v);
+
   if (isLoading)
     return (
-      <div className="mb-4 flex h-[350px] items-center justify-center">
+      <div className={cn("mb-4 flex h-[350px] items-center justify-center")}>
         <LoadingSpinner />
       </div>
     );
@@ -48,10 +52,29 @@ const TopPrioritySection: React.FC = () => {
   if (isError) return <div>Error!</div>;
 
   return (
-    <section className="mb-16 flex flex-col items-center">
-      <h2 className="mb-4 animate-bounce text-xl font-black">Top Priority</h2>
+    <section
+      className={cn(
+        "mb-16 flex flex-col items-center",
+        isFullscreen &&
+          "fixed left-0 top-0 z-50 h-[100dvh] w-[98dvw] justify-center",
+      )}
+    >
+      <h2
+        className={cn(
+          "mb-4 animate-bounce text-xl font-black",
+          isFullscreen && "hidden",
+        )}
+      >
+        Top Priority
+      </h2>
 
-      {topPriority && <TopPriorityCard body={topPriority.body} />}
+      {topPriority && (
+        <TopPriorityCard
+          body={topPriority.body}
+          isFullscreen={isFullscreen}
+          onFullscreenToggled={toggleFullscreen}
+        />
+      )}
 
       {!topPriority && <EmptyText>No top priority has been set</EmptyText>}
     </section>

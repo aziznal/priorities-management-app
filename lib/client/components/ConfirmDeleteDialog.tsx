@@ -6,8 +6,8 @@ import {
   DialogTitle,
   DialogDescription,
   DialogClose,
-} from "@/lib/client/components/ui/Dialog";
-import { Button } from "@/lib/client/components/ui/Button";
+} from "@/lib/client/components";
+import { Button } from "@/lib/client/components";
 
 export const ConfirmDeleteDialog: React.FC<{
   title?: string;

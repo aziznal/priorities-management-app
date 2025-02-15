@@ -7,6 +7,7 @@ import { useCallback, useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { ConfirmDeleteDialog } from "./ConfirmDeleteDialog";
+import { IconButton } from "./ui/buttons/IconButton";
 
 export const PriorityCard: React.FC<{
   id: string;
@@ -67,7 +68,7 @@ export const PriorityCard: React.FC<{
               {...sortable.attributes}
               {...sortable.listeners}
               className={cn(
-                "shrink-0 cursor-grab focus:outline-none active:cursor-grabbing active:outline-none touch-none",
+                "shrink-0 cursor-grab touch-none focus:outline-none active:cursor-grabbing active:outline-none",
                 props.isDraggingDisabled && "cursor-not-allowed text-lime-600",
               )}
             />
@@ -83,11 +84,12 @@ export const PriorityCard: React.FC<{
                 {isDone && <span> ✅</span>}
               </p>
 
-              <LucidePencil
+              <IconButton
+                className="hidden group-hover/priority-body:block"
                 onClick={() => setIsEditDialogOpen(true)}
-                size="18"
-                className="invisible shrink-0 cursor-pointer group-hover/priority-body:visible"
-              />
+              >
+                <LucidePencil size="18" />
+              </IconButton>
             </div>
 
             <p className="text-sm opacity-55">
@@ -96,11 +98,9 @@ export const PriorityCard: React.FC<{
           </div>
         </div>
 
-        <LucideTrash
-          className="shrink-0 cursor-pointer"
-          onClick={confirmDelete}
-          size="20"
-        />
+        <IconButton onClick={confirmDelete}>
+          <LucideTrash size="20" />
+        </IconButton>
       </div>
 
       <EditPriortyTextDialog

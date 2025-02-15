@@ -1,5 +1,8 @@
 import { Priority } from "@/lib/common/types";
+import { useCallback, useRef } from "react";
 import {
+  Button,
+  Textarea,
   Dialog,
   DialogHeader,
   DialogContent,
@@ -7,10 +10,7 @@ import {
   DialogTitle,
   DialogDescription,
   DialogClose,
-} from "@/lib/client/components/ui/Dialog";
-import { useCallback, useRef } from "react";
-import { Button } from "@/lib/client/components/ui/Button";
-import { Textarea } from "@/lib/client/components/ui/Textarea";
+} from "@/lib/client/components";
 
 export const EditPriortyTextDialog: React.FC<{
   open: boolean;
