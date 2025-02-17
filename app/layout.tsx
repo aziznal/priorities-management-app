@@ -26,7 +26,7 @@ export default async function RootLayout({
     <Providers>
       <html lang="en" className={cn(isDarkmode ? "dark" : null)}>
         <body
-          className={`${jetBrainsMono.className} flex min-h-screen flex-col bg-amber-200 antialiased dark:bg-slate-900 dark:text-emerald-200`}
+          className={`${jetBrainsMono.className} flex min-h-screen flex-col bg-amber-200 antialiased dark:bg-slate-900`}
         >
           {children}
         </body>

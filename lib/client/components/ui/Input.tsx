@@ -19,9 +19,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           rounded-full
           border-2
           bg-white
-          text-white
           px-2
           shadow-[3px_4px]
+          shadow-inherit
 
           focus-within:bg-lime-400
           hover:bg-lime-400

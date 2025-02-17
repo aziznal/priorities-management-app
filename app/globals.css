@@ -10,8 +10,18 @@
 
 * {
   @apply border-zinc-900 shadow-black;
+
+  body {
+    @apply text-black;
+  }
 }
 
-.dark * {
-  @apply border-slate-950 shadow-slate-950;
+.dark {
+  * {
+    @apply border-slate-950 !shadow-slate-950;
+  }
+
+  body {
+    @apply text-emerald-200;
+  }
 }

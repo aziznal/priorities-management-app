@@ -57,8 +57,8 @@ export const PriorityCard: React.FC<{
         style={style}
         ref={sortable.setNodeRef}
         className={cn(
-          "group/priority-body flex items-start justify-between gap-3 rounded-lg border-2 bg-lime-300 p-4 text-black shadow-[4px_4px] dark:bg-lime-500",
-          isDone && "bg-lime-100",
+          "group/priority-body flex items-start justify-between gap-3 rounded-lg border-2 bg-lime-300 p-4 text-black shadow-[4px_4px] dark:bg-blue-400",
+          isDone && "bg-lime-100 dark:bg-blue-200",
           className,
         )}
       >
@@ -75,8 +75,8 @@ export const PriorityCard: React.FC<{
           </div>
 
           <div className="flex flex-col gap-2">
-            <div className="flex items-start gap-1">
-              <p className="flex flex-wrap gap-1">
+            <div className="flex items-start">
+              <p className="flex flex-wrap gap-1 mr-4">
                 <span className={cn(isDone && "line-through opacity-50")}>
                   {props.body}
                 </span>
@@ -84,12 +84,21 @@ export const PriorityCard: React.FC<{
                 {isDone && <span> ✅</span>}
               </p>
 
-              <IconButton
-                className="hidden group-hover/priority-body:block"
-                onClick={() => setIsEditDialogOpen(true)}
-              >
-                <LucidePencil size="18" />
-              </IconButton>
+              <div className="flex items-center gap-2">
+                <IconButton
+                  className="invisible group-hover/priority-body:visible"
+                  onClick={() => setIsEditDialogOpen(true)}
+                >
+                  <LucidePencil size="18" />
+                </IconButton>
+
+                <IconButton
+                  onClick={confirmDelete}
+                  className="invisible group-hover/priority-body:visible"
+                >
+                  <LucideTrash size="20" />
+                </IconButton>
+              </div>
             </div>
 
             <p className="text-sm opacity-55">
@@ -97,10 +106,6 @@ export const PriorityCard: React.FC<{
             </p>
           </div>
         </div>
-
-        <IconButton onClick={confirmDelete}>
-          <LucideTrash size="20" />
-        </IconButton>
       </div>
 
       <EditPriortyTextDialog
