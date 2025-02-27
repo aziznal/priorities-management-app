@@ -4,6 +4,7 @@ import "./globals.css";
 import { Providers } from "@/lib/client/providers";
 import { cn } from "@/lib/client/utils";
 import { getIsDarkmode_server } from "@/lib/common/darkmode/server";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const jetBrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -29,6 +30,8 @@ export default async function RootLayout({
           className={`${jetBrainsMono.className} flex min-h-screen flex-col bg-amber-200 antialiased dark:bg-slate-900`}
         >
           {children}
+
+          <ReactQueryDevtools initialIsOpen={false} />
         </body>
       </html>
     </Providers>
