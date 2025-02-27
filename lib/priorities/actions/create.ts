@@ -14,6 +14,9 @@ import { Priority } from "../core/priority-type";
 export async function createNewPriority(
   createdPriorityRequest: CreatePriorityRequest,
 ) {
+  // this is done to make room for the new priority as the first one
+  await incrementAllOrdersByOne();
+
   const createdPriority = parseWithSchema({
     data: createdPriorityRequest,
     schema: createPriorityRequestSchema,
@@ -22,26 +25,10 @@ export async function createNewPriority(
   if (!createdPriority) throw new Error("Invalid priority body provided");
 
   const supabase = await createClient();
-
-  const biggestOrderQuery = await supabase
-    .from("priorities")
-    .select()
-    .order("order", {
-      ascending: false,
-    })
-    .limit(1)
-    .maybeSingle();
-
-  if (biggestOrderQuery.error)
-    throw new Error("unknown error occurred while reading data");
-
-  // if no data, then must be adding first element
-  const lastOrder = biggestOrderQuery.data?.order ?? 0;
-
   const newPriority: Priority = {
     id: createUuid(),
     body: createdPriority.body,
-    order: lastOrder + 1,
+    order: 1, // new priorities are added first
     createdAt: new Date().toISOString(),
   };
 
@@ -51,4 +38,26 @@ export async function createNewPriority(
 
   if (insertQuery.error)
     throw new Error("Something went wrong while inserting priority");
+}
+
+async function incrementAllOrdersByOne() {
+  const supabase = await createClient();
+
+  const existingPrioritiesQuery = await supabase
+    .from("priorities")
+    .select("id, order");
+
+  if (existingPrioritiesQuery.error)
+    throw new Error("Could not re-order priorities");
+
+  const updatedPriorities = existingPrioritiesQuery.data.map((p) => ({
+    ...p,
+    order: p.order + 1,
+  }));
+
+  const updateQuery = await supabase
+    .from("priorities")
+    .upsert(updatedPriorities);
+
+  if (updateQuery.error) throw new Error("Could not re-order priorities");
 }

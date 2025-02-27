@@ -135,7 +135,7 @@ const OtherPrioritiesSection: React.FC = () => {
           <h2 className="text-xl font-semibold">Other Priorities</h2>
 
           <Button
-            onClick={() => createPriorityMutation.mutate({ body: "Untittied" })}
+            onClick={() => createPriorityMutation.mutate({ body: "Untitled" })}
           >
             New +
           </Button>
