@@ -21,6 +21,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { DarkmodeToggle } from "@/lib/common/darkmode/DarkmodeToggle";
+import { AnimatePresence } from "motion/react";
 
 export const runtime = "edge";
 export const dynamic = "force-dynamic";
@@ -172,19 +173,22 @@ const OtherPrioritiesSection: React.FC = () => {
               disabled={isFiltering}
               strategy={verticalListSortingStrategy}
             >
-              {priorities.map((p) => (
-                <PriorityCard
-                  key={p.id}
-                  className="min-w-[350px]"
-                  id={p.id}
-                  body={p.body}
-                  createdAt={p.createdAt}
-                  onDeleteClicked={() =>
-                    deletePriorityByIdMutation.mutate(p.id)
-                  }
-                  isDraggingDisabled={isFiltering}
-                />
-              ))}
+              <AnimatePresence>
+                {priorities.map((p, i) => (
+                  <PriorityCard
+                    key={p.id}
+                    index={i}
+                    className="min-w-[350px]"
+                    id={p.id}
+                    body={p.body}
+                    createdAt={p.createdAt}
+                    onDeleteClicked={() =>
+                      deletePriorityByIdMutation.mutate(p.id)
+                    }
+                    isDraggingDisabled={isFiltering}
+                  />
+                ))}
+              </AnimatePresence>
             </SortableContext>
           </DndContext>
 
