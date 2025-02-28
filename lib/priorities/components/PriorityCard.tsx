@@ -99,13 +99,18 @@ export const PriorityCard: React.FC<{
 
             <div className="flex flex-col gap-2">
               <div className="flex items-start">
-                <p className="mr-4 flex flex-wrap gap-1">
-                  <span className={cn(isDone && "line-through opacity-50")}>
+                <div className="mr-4 flex flex-wrap gap-1">
+                  <p
+                    className={cn(
+                      "break-all",
+                      isDone && "line-through opacity-50",
+                    )}
+                  >
                     {props.body}
-                  </span>
+                  </p>
 
                   {isDone && <span> ✅</span>}
-                </p>
+                </div>
 
                 <div className="flex items-center gap-2">
                   <IconButton
