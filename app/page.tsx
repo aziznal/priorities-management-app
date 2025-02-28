@@ -10,8 +10,10 @@ import { PriorityFilterInput } from "@/lib/priorities/components/PriorityFilterI
 import { TopPriorityCard } from "@/lib/priorities/components/TopPriorityCard";
 import { usePriorities } from "@/lib/priorities/hooks/usePriorities";
 import {
+  useCompletePriorityMutation,
   useCreatePriorityMutation,
   useDeletePriorityByIdMutation,
+  useUncompletePriorityMutation,
 } from "@/lib/priorities/queries";
 
 import { DndContext } from "@dnd-kit/core";
@@ -118,6 +120,8 @@ const TopPrioritySection: React.FC = () => {
 const OtherPrioritiesSection: React.FC = () => {
   const createPriorityMutation = useCreatePriorityMutation();
   const deletePriorityByIdMutation = useDeletePriorityByIdMutation();
+  const completePriorityMutation = useCompletePriorityMutation();
+  const uncompletePriorityMutation = useUncompletePriorityMutation();
 
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -185,6 +189,12 @@ const OtherPrioritiesSection: React.FC = () => {
                     onDeleteClicked={() =>
                       deletePriorityByIdMutation.mutate(p.id)
                     }
+                    onCompleteClicked={() => {
+                      completePriorityMutation.mutate({ priorityId: p.id });
+                    }}
+                    onUncompleteClicked={() => {
+                      uncompletePriorityMutation.mutate({ priorityId: p.id });
+                    }}
                     isDraggingDisabled={isFiltering}
                   />
                 ))}

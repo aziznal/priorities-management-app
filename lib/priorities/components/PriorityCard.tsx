@@ -1,4 +1,4 @@
-import { LucideGripVertical, LucidePencil, LucideTrash } from "lucide-react";
+import { LucideCheck, LucideGripVertical, LucidePencil, LucideRotateCcw, LucideTrash } from "lucide-react";
 import { getElapsedTime } from "@/lib/common/helpers/date";
 import { EditPriortyTextDialog } from "./EditPriorityTextDialog";
 import { useCallback, useState } from "react";
@@ -15,11 +15,14 @@ export const PriorityCard: React.FC<{
   id: string;
   body: string;
   createdAt: string;
-  onDeleteClicked: () => void;
+
+  index: number;
   className?: string;
 
   isDraggingDisabled: boolean;
-  index: number;
+  onDeleteClicked: () => void;
+  onCompleteClicked: () => void;
+  onUncompleteClicked: () => void;
 }> = ({ className, ...props }) => {
   const sortable = useSortable({
     id: props.id,
@@ -112,20 +115,26 @@ export const PriorityCard: React.FC<{
                   {isDone && <span> ✅</span>}
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <IconButton
-                    className="invisible group-hover/priority-body:visible"
-                    onClick={() => setIsEditDialogOpen(true)}
-                  >
+                <div className="invisible flex items-center gap-2 group-hover/priority-body:visible">
+                  <IconButton onClick={() => setIsEditDialogOpen(true)}>
                     <LucidePencil size="18" />
                   </IconButton>
 
-                  <IconButton
-                    onClick={confirmDelete}
-                    className="invisible group-hover/priority-body:visible"
-                  >
+                  <IconButton onClick={confirmDelete}>
                     <LucideTrash size="20" />
                   </IconButton>
+
+                  {!isDone && (
+                    <IconButton onClick={props.onCompleteClicked}>
+                      <LucideCheck size="20" />
+                    </IconButton>
+                  )}
+
+                  {isDone && (
+                    <IconButton onClick={props.onUncompleteClicked}>
+                      <LucideRotateCcw size="20" />
+                    </IconButton>
+                  )}
                 </div>
               </div>
 

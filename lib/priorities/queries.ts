@@ -4,6 +4,7 @@ import { createNewPriority } from "./actions/create";
 import { deletePriorityById, deleteManyPriorities } from "./actions/delete";
 import { getPriorities } from "./actions/get";
 import { updatePriorityById, updateManyPriorities } from "./actions/update";
+import { completePriority, uncompletePriority } from "./actions/complete";
 
 export const priorityQueryKeyFactory = {
   all: "priorities",
@@ -35,6 +36,27 @@ export const useUpdatePriorityMutation = () =>
       });
     },
   });
+
+export const useCompletePriorityMutation = () =>
+  useMutation({
+    mutationFn: completePriority,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: priorityQueryKeyFactory.getAll(),
+      });
+    },
+  });
+
+export const useUncompletePriorityMutation = () =>
+  useMutation({
+    mutationFn: uncompletePriority,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: priorityQueryKeyFactory.getAll(),
+      });
+    },
+  });
+
 
 export const useDeletePriorityByIdMutation = () =>
   useMutation({
